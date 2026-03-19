@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { useState } from "react";
 import heroImg from "./assets/hero.png";
 
@@ -9,66 +8,6 @@ const [username, setUsername] = useState("");
 const [score, setScore] = useState(null);
 const [profile, setProfile] = useState(null);
 const [loading, setLoading] = useState(false);
-
-const [wallet, setWallet] = useState(null);
-const contractAddress = "PASTE_YOUR_CONTRACT_ADDRESS";
-
-const abi = [
-  {
-    inputs: [{ internalType: "address", name: "user", type: "address" }],
-    name: "getLoanAmount",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "uint256", name: "score", type: "uint256" }],
-    name: "setScore",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-];
-
-async function connectWallet(){
-
-  if(window.ethereum){
-
-    const provider = new ethers.BrowserProvider(window.ethereum)
-
-    const accounts = await provider.send("eth_requestAccounts", [])
-
-    setWallet(accounts[0])
-
-  } else {
-    alert("Install MetaMask")
-  }
-}
-async function setScoreOnChain() {
-  if (!wallet) return alert("Connect wallet first");
-
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  const signer = await provider.getSigner();
-
-  const contract = new ethers.Contract(contractAddress, abi, signer);
-
-  await contract.setScore(profile.score);
-
-  alert("Score stored on blockchain 🚀");
-}
-
-async function getLoanFromChain() {
-  if (!wallet) return alert("Connect wallet first");
-
-  const provider = new ethers.BrowserProvider(window.ethereum);
-  const signer = await provider.getSigner();
-
-  const contract = new ethers.Contract(contractAddress, abi, signer);
-
-  const loan = await contract.getLoanAmount(wallet);
-
-  alert("Blockchain Loan: $" + loan.toString());
-}
 
 const analyzeProfile = async () => {
 if (!username) return;
